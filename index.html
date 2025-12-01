@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+	<meta charset="UTF-8">
+	<title></title>
+	<style>
+		* {
+			padding: 0;
+			margin: 0;
+		}
+
+		body {
+			display: flex;
+			justify-content: space-between;
+			align-items: stretch;
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+		}
+
+		.slot {
+			position: relative;
+			display: flex;
+			flex: 1;
+			height: 100%;
+			flex-direction: column-reverse;
+			align-items: center;
+		}
+
+		.pole {
+			width: 3vw;
+			position: absolute;
+			height: 50vh;
+			background: black;
+			left: 50%;
+			bottom: 0;
+			transform: translateX(-50%);
+			z-index: -1;
+		}
+
+		.plate {
+			height: 8vh;
+			background: aqua;
+			margin: 1vh;
+			cursor: grab;
+		}
+
+	</style>
+</head>
+
+<body>
+	<div class="slot" data-no="0">
+		<div class="pole"></div>
+	</div>
+	<div class="slot" data-no="1">
+		<div class="pole"></div>
+	</div>
+	<div class="slot" data-no="2">
+		<div class="pole"></div>
+	</div>
+
+	<script src="main.js"></script>
+</body>
+
+</html>
