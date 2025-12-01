@@ -121,4 +121,4 @@ class Game {
 	}
 }
 
-const a = new Game(30, 80, 3);
+const a = new Game(30, 80, 4);
