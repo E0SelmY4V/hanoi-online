@@ -38,15 +38,35 @@ class Game {
 		this.slots = Array.from(document.querySelectorAll('.slot'));
 		this.consMap = new WeakMap(this.slots.map(n => [n, new HanoiCons()]));
 		this.plates = this.addPlates();
+		this.btns = Array.from(document.querySelectorAll(".btn"));
+		this.readyBtns();
 		this.dragablify();
 	}
-	addPlate(level, idx) {
+	readyBtns() {
+		this.btns.forEach(btnSelect => {
+			btnSelect.hidden = false;
+			btnSelect.innerHTML = '选择';
+			btnSelect.onclick = () => {
+				const level = this.consMap.get(btnSelect.parentElement).getHead();
+				const plate = document.getElementById('plate_' + level);
+				btnSelect.hidden = true;
+				this.btns.forEach(btnMove => {
+					btnMove.innerHTML = '放置';
+					btnMove.onclick = () => {
+						this.move(plate, btnMove.parentElement);
+						this.readyBtns();
+					}
+				});
+			};
+		});
+	}
+	addPlate(level) {
 		const div = document.createElement('div');
 		div.className = 'plate';
 		div.style.width = level + '%';
 		this.slots[0].appendChild(div);
 		this.consMap.get(this.slots[0]).add(level);
-		div.id = `plate_${idx}`;
+		div.id = `plate_${level}`;
 		div.draggable = true;
 		return div;
 	}
@@ -58,6 +78,21 @@ class Game {
 			.reverse()
 			.map((n, idx) => this.addPlate(n, idx));
 	}
+	move(plateFrom, slotTo) {
+		const cons = this.consMap.get(slotTo);
+		const preCons = this.consMap.get(plateFrom.parentElement);
+		const n = preCons.remove();
+		if (!cons.add(n)) {
+			preCons.add(n);
+			return;
+		}
+		plateFrom.parentNode.removeChild(plateFrom);
+		slotTo.appendChild(plateFrom);
+		console.log(this.slots.map(n => this.consMap.get(n)).map(n => n.copy().toArray().toString() + ' ' + n.copy().len()));
+		if (this.consMap.get(this.slots[2]).copy().len() === this.num) {
+			console.log('Win');
+		}
+	}
 	dragablify() {
 		this.slots.forEach(slot => {
 			const cons = this.consMap.get(slot);
@@ -67,18 +102,7 @@ class Game {
 			slot.ondrop = e => {
 				const id = e.dataTransfer.getData('plateNow');
 				const plate = document.getElementById(id);
-				const preCons = this.consMap.get(plate.parentElement);
-				const n = preCons.remove();
-				if (!cons.add(n)) {
-					preCons.add(n);
-					return;
-				}
-				plate.parentNode.removeChild(plate);
-				slot.appendChild(plate);
-				console.log(this.slots.map(n => this.consMap.get(n)).map(n => n.copy().toArray().toString() + ' ' + n.copy().len()));
-				if (this.consMap.get(this.slots[2]).copy().len() === this.num) {
-					console.log('Win');
-				}
+				this.move(plate, slot);
 			};
 		});
 		this.plates.forEach(plate => {
