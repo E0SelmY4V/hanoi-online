@@ -27,7 +27,7 @@ body {
 .pole {
 	width: 3vw;
 	position: absolute;
-	height: 80vh;
+	height: 60vh;
 	background: black;
 	left: 50%;
 	bottom: 0;
@@ -36,7 +36,7 @@ body {
 }
 
 .plate {
-	height: 8vh;
+	height: 5vh;
 	background: aqua;
 	margin: 1vh;
 	cursor: grab;
