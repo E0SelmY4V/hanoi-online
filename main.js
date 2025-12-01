@@ -96,6 +96,7 @@ class Game {
 		plateFrom.parentNode.removeChild(plateFrom);
 		slotTo.appendChild(plateFrom);
 		console.log(this.slots.map(n => this.consMap.get(n)).map(n => n.copy().toArray().toString() + ' ' + n.copy().len()));
+		step_span.innerHTML = parseInt(step_span.innerHTML) + 1;
 		if (this.consMap.get(this.slots[2]).copy().len() === this.num) {
 			console.log('Win');
 		}
@@ -124,6 +125,7 @@ class Game {
 		this.plates.forEach(plate => {
 			plate.parentNode.removeChild(plate);
 		});
+		step_span.innerHTML = 0;
 	}
 }
 
