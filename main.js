@@ -75,7 +75,7 @@ class Game {
 		this.consMap.get(this.slots[0]).add(level);
 		div.id = `plate_${level}`;
 		div.draggable = true;
-		div.innerHTML = this.num - idx;
+		div.innerHTML = idx + 1;
 		return div;
 	}
 	addPlates() {
