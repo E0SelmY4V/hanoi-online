@@ -121,4 +121,9 @@ class Game {
 	}
 }
 
-const a = new Game(30, 80, 4);
+let a = new Game(30, 80, 5);
+start_button.onclick = () => {
+	a.end();
+	a = new Game(30, 80, parseInt(num_input.value));
+};
+

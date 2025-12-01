@@ -8,6 +8,7 @@
 		* {
 			padding: 0;
 			margin: 0;
+			font-size: 6vh;
 		}
 
 		body {
@@ -33,7 +34,7 @@
 		.pole {
 			width: 3vw;
 			position: absolute;
-			height: 50vh;
+			height: 80vh;
 			background: black;
 			left: 50%;
 			bottom: 0;
@@ -48,14 +49,27 @@
 			cursor: grab;
 		}
 
-		.btn {
-			font-size: 6vh;
+		.setting {
+			position: absolute;
+			top: 5vh;
+			left: 50%;
+			transform: translateX(-50%);
+			z-index: 100;
+			white-space: nowrap;
+		}
+
+		#num_input {
+			width: 2em;
 		}
 
 	</style>
 </head>
 
 <body>
+	<div class="setting">
+		<button id="start_button">设置层数</button>
+		<input id="num_input" value="5" />
+	</div>
 	<div class="slot" data-no="0">
 		<div class="pole"></div>
 		<button class="btn"></button>
