@@ -67,7 +67,7 @@ class Game {
 			};
 		});
 	}
-	addPlate(level) {
+	addPlate(level, idx) {
 		const div = document.createElement('div');
 		div.className = 'plate';
 		div.style.width = level + '%';
@@ -75,6 +75,7 @@ class Game {
 		this.consMap.get(this.slots[0]).add(level);
 		div.id = `plate_${level}`;
 		div.draggable = true;
+		div.innerHTML = this.num - idx;
 		return div;
 	}
 	addPlates() {
