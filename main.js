@@ -48,6 +48,7 @@ class Game {
 			btnSelect.innerHTML = '选择';
 			btnSelect.onclick = () => {
 				const level = this.consMap.get(btnSelect.parentElement).getHead();
+				if (level === Infinity) return;
 				const plate = document.getElementById('plate_' + level);
 				btnSelect.hidden = true;
 				this.btns.forEach(btnMove => {
