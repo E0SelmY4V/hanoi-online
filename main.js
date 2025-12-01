@@ -103,7 +103,6 @@ class Game {
 	}
 	dragablify() {
 		this.slots.forEach(slot => {
-			const cons = this.consMap.get(slot);
 			slot.ondragenter = () => { };
 			slot.ondragleave = () => { };
 			slot.ondragover = e => e.preventDefault();
@@ -129,9 +128,12 @@ class Game {
 	}
 }
 
-let a = new Game(30, 80, 5);
+const fromWidth = 20;
+const toWidth = 90;
+let a = { end() { } };
 start_button.onclick = () => {
 	a.end();
-	a = new Game(30, 80, parseInt(num_input.value));
+	a = new Game(fromWidth, toWidth, parseInt(num_input.value));
 };
+start_button.click();
 
