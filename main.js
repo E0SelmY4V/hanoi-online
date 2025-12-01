@@ -89,6 +89,7 @@ class Game {
 	move(plateFrom, slotTo) {
 		const cons = this.consMap.get(slotTo);
 		const preCons = this.consMap.get(plateFrom.parentElement);
+		if (cons === preCons) return;
 		const n = preCons.remove();
 		if (!cons.add(n)) {
 			preCons.add(n);
