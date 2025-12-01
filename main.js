@@ -47,14 +47,20 @@ class Game {
 			btnSelect.hidden = false;
 			btnSelect.innerHTML = '选择';
 			btnSelect.onclick = () => {
-				const level = this.consMap.get(btnSelect.parentElement).getHead();
+				const slotFrom = btnSelect.parentElement;
+				const level = this.consMap.get(slotFrom).getHead();
 				if (level === Infinity) return;
 				const plate = document.getElementById('plate_' + level);
+				const div = document.createElement('div');
+				div.style.width = btnSelect.clientWidth + 'px';
+				div.style.height = btnSelect.clientHeight + 'px';
+				slotFrom.insertBefore(div, slotFrom.children[0]);
 				btnSelect.hidden = true;
 				this.btns.forEach(btnMove => {
 					btnMove.innerHTML = '放置';
 					btnMove.onclick = () => {
 						this.move(plate, btnMove.parentElement);
+						slotFrom.removeChild(div);
 						this.readyBtns();
 					}
 				});
