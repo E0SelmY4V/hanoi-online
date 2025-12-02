@@ -111,19 +111,7 @@ class Game {
 			.reverse()
 			.map((n, idx) => this.addPlate(n, idx));
 	}
-	move(plateFrom, slotTo) {
-	}
 	dragablify() {
-		this.slots.forEach(slot => {
-			slot.ondragenter = () => { };
-			slot.ondragleave = () => { };
-			slot.ondragover = e => e.preventDefault();
-			slot.ondrop = e => {
-				const id = e.dataTransfer.getData('plateNow');
-				const plate = document.getElementById(id);
-				this.move(plate, slot);
-			};
-		});
 		this.plates.forEach(plate => {
 			plate.ondragstart = e => {
 				e.dataTransfer.setData('plateNow', plate.id);
@@ -131,20 +119,29 @@ class Game {
 			plate.ondrag = () => { };
 			plate.ondragend = () => { };
 		});
+		this.slots.forEach(slot => {
+			slot.ondragenter = () => { };
+			slot.ondragleave = () => { };
+			slot.ondragover = e => e.preventDefault();
+			slot.ondrop = e => {
+				const id = e.dataTransfer.getData('plateNow');
+				const plate = document.getElementById(id);
+				plate.parentElement.querySelector('button').click();
+				slot.querySelector('button').click();
+			};
+		});
 	}
 	end() {
-		this.plates.forEach(plate => {
-			plate.parentNode.removeChild(plate);
-		});
+		this.plates.forEach(plate => plate.parentNode.removeChild(plate));
 		step_span.innerHTML = 0;
 	}
 }
 
 const fromWidth = 20;
 const toWidth = 90;
-let a = { end() { } };
+let a = null;
 start_button.onclick = () => {
-	a.end();
+	a?.end?.();
 	a = new Game(fromWidth, toWidth, parseInt(num_input.value));
 };
 start_button.click();
