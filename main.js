@@ -44,34 +44,53 @@ class Game {
 	}
 	hiddenBtn(btn) {
 		btn.hidden = true;
+		btn.onclick = () => { };
 	}
-	showBtn(btn, text) {
+	showBtn(btn, text, onclick) {
 		btn.hidden = false;
 		btn.innerHTML = text;
+		btn.onclick = () => onclick();
+	}
+	win() {
+		this.btns.forEach(this.hiddenBtn);
+		step_span.innerHTML += ' 你赢了！'
 	}
 	readyBtns() {
-		for (const btnSelect of this.btns) {
-			const slotFrom = btnSelect.parentElement;
-			const cons = this.consMap.get(slotFrom);
-			if (cons.getHead() === Infinity) {
-				this.hiddenBtn(btnSelect);
-				return;
-			}
-			this.showBtn(btnSelect, '选择');
-			btnSelect.onclick = () => {
-				this.showBtn(btnSelect, '取消');
-				btnSelect.onclick = () => this.readyBtns();
-				for (const btnMove of this.btns.filter(n => n !== btnSelect)) {
-					this.showBtn(btnMove, '放置');
-					btnMove.onclick = () => {
-						const level = cons.getHead();
-						const plate = document.getElementById('plate_' + level);
-						this.move(plate, btnMove.parentElement);
-						this.readyBtns();
+		this.btns
+			.map(btnFrom => {
+				const slotFrom = btnFrom.parentElement;
+				const consFrom = this.consMap.get(slotFrom);
+				return { btnFrom, slotFrom, consFrom };
+			})
+			.filter(({ btnFrom, consFrom }) =>
+				consFrom.getHead() !== Infinity || (this.hiddenBtn(btnFrom), false)
+			)
+			.map(({ btnFrom, slotFrom, consFrom }) => [btnFrom, '选择', () => this.btns
+				.filter(btnTo =>
+					btnTo !== btnFrom || (this.showBtn(btnFrom, '取消', () => this.readyBtns()), false)
+				)
+				.map(btnTo => {
+					const level = consFrom.getHead();
+					const plate = document.getElementById('plate_' + level);
+					const slotTo = btnTo.parentElement;
+					const consTo = this.consMap.get(slotTo);
+					return { plate, level, slotTo, consTo, btnTo };
+				})
+				.map(({ btnTo, consTo, plate, slotTo }) => [btnTo, '放置', () => {
+					const n = consFrom.remove();
+					if (!consTo.add(n)) {
+						consFrom.add(n);
+					} else {
+						slotFrom.removeChild(plate);
+						slotTo.appendChild(plate);
+						step_span.innerHTML = parseInt(step_span.innerHTML) + 1;
+						if (this.consMap.get(this.slots[2]).copy().len() === this.num) return this.win();
 					}
-				}
-			};
-		}
+					this.readyBtns();
+				}])
+				.map(n => this.showBtn(...n))
+			])
+			.map(n => this.showBtn(...n));
 	}
 	addPlate(level, idx) {
 		const div = document.createElement('div');
@@ -93,21 +112,6 @@ class Game {
 			.map((n, idx) => this.addPlate(n, idx));
 	}
 	move(plateFrom, slotTo) {
-		const cons = this.consMap.get(slotTo);
-		const preCons = this.consMap.get(plateFrom.parentElement);
-		if (cons === preCons) return;
-		const n = preCons.remove();
-		if (!cons.add(n)) {
-			preCons.add(n);
-			return;
-		}
-		plateFrom.parentNode.removeChild(plateFrom);
-		slotTo.appendChild(plateFrom);
-		console.log(this.slots.map(n => this.consMap.get(n)).map(n => n.copy().toArray().toString() + ' ' + n.copy().len()));
-		step_span.innerHTML = parseInt(step_span.innerHTML) + 1;
-		if (this.consMap.get(this.slots[2]).copy().len() === this.num) {
-			console.log('Win');
-		}
 	}
 	dragablify() {
 		this.slots.forEach(slot => {
