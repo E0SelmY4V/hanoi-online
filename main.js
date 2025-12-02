@@ -39,23 +39,13 @@ class Game {
 		this.consMap = new WeakMap(this.slots.map(n => [n, new HanoiCons()]));
 		this.plates = this.addPlates();
 		this.btns = Array.from(document.querySelectorAll(".btn"));
-		this.voidDivMap = new WeakMap(this.btns.map(btn => {
-			const div = document.createElement('div');
-			btn.parentElement.insertBefore(div, btn);
-			return [btn, div];
-		}));
 		this.readyBtns();
 		this.dragablify();
 	}
 	hiddenBtn(btn) {
-		const div = this.voidDivMap.get(btn);
-		div.hidden = false;
-		div.style.width = btn.clientWidth + 'px';
-		div.style.height = btn.clientHeight + 'px';
 		btn.hidden = true;
 	}
 	showBtn(btn, text) {
-		this.voidDivMap.get(btn).hidden = true;
 		btn.hidden = false;
 		btn.innerHTML = text;
 	}
@@ -69,12 +59,13 @@ class Game {
 			}
 			this.showBtn(btnSelect, '选择');
 			btnSelect.onclick = () => {
-				const level = cons.getHead();
-				const plate = document.getElementById('plate_' + level);
-				this.hiddenBtn(btnSelect);
+				this.showBtn(btnSelect, '取消');
+				btnSelect.onclick = () => this.readyBtns();
 				for (const btnMove of this.btns.filter(n => n !== btnSelect)) {
 					this.showBtn(btnMove, '放置');
 					btnMove.onclick = () => {
+						const level = cons.getHead();
+						const plate = document.getElementById('plate_' + level);
 						this.move(plate, btnMove.parentElement);
 						this.readyBtns();
 					}
