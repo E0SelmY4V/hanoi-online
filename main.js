@@ -39,33 +39,48 @@ class Game {
 		this.consMap = new WeakMap(this.slots.map(n => [n, new HanoiCons()]));
 		this.plates = this.addPlates();
 		this.btns = Array.from(document.querySelectorAll(".btn"));
+		this.voidDivMap = new WeakMap(this.btns.map(btn => {
+			const div = document.createElement('div');
+			btn.parentElement.insertBefore(div, btn);
+			return [btn, div];
+		}));
 		this.readyBtns();
 		this.dragablify();
 	}
+	hiddenBtn(btn) {
+		const div = this.voidDivMap.get(btn);
+		div.hidden = false;
+		div.style.width = btn.clientWidth + 'px';
+		div.style.height = btn.clientHeight + 'px';
+		btn.hidden = true;
+	}
+	showBtn(btn, text) {
+		this.voidDivMap.get(btn).hidden = true;
+		btn.hidden = false;
+		btn.innerHTML = text;
+	}
 	readyBtns() {
-		this.btns.forEach(btnSelect => {
-			btnSelect.hidden = false;
-			btnSelect.innerHTML = '选择';
+		for (const btnSelect of this.btns) {
+			const slotFrom = btnSelect.parentElement;
+			const cons = this.consMap.get(slotFrom);
+			if (cons.getHead() === Infinity) {
+				this.hiddenBtn(btnSelect);
+				return;
+			}
+			this.showBtn(btnSelect, '选择');
 			btnSelect.onclick = () => {
-				const slotFrom = btnSelect.parentElement;
-				const level = this.consMap.get(slotFrom).getHead();
-				if (level === Infinity) return;
+				const level = cons.getHead();
 				const plate = document.getElementById('plate_' + level);
-				const div = document.createElement('div');
-				div.style.width = btnSelect.clientWidth + 'px';
-				div.style.height = btnSelect.clientHeight + 'px';
-				slotFrom.insertBefore(div, slotFrom.children[0]);
-				btnSelect.hidden = true;
-				this.btns.forEach(btnMove => {
-					btnMove.innerHTML = '放置';
+				this.hiddenBtn(btnSelect);
+				for (const btnMove of this.btns.filter(n => n !== btnSelect)) {
+					this.showBtn(btnMove, '放置');
 					btnMove.onclick = () => {
 						this.move(plate, btnMove.parentElement);
-						slotFrom.removeChild(div);
 						this.readyBtns();
 					}
-				});
+				}
 			};
-		});
+		}
 	}
 	addPlate(level, idx) {
 		const div = document.createElement('div');
