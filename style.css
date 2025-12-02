@@ -36,7 +36,8 @@ body {
 }
 
 .plate {
-	height: 5vh;
+	overflow: hidden;
+	height: 6vh;
 	background: aqua;
 	margin: 1vh;
 	cursor: grab;
